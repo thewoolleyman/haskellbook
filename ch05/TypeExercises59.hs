@@ -18,9 +18,9 @@ module TypeExercises59 where
 
 co :: (b -> c) -> (a -> b) -> (a -> c) -- ; co = undefined
 --co :: (b -> c) -> (a -> b) -> a -> c -- ; co = undefined
-co f g x = f (g x)
--- co b2c a2b = b2c . a2b
+co b2c a2b x = b2c (a2b x)
 -- co b2c a2b = \x -> b2c (a2b x)
+-- co b2c a2b = b2c . a2b
 
 -- co' :: (a -> b)
 -- co' x = 1
