@@ -13,12 +13,12 @@ tensDigit x = d
   where xLast = div x 10
         d     = mod xLast 10
 
--- (mod (fst(divMod x 10)) 10)
 tensDigit' x = mod (fst (divMod x 10)) 10
 
 tensDigitPF = (a . b . c)
-  where a x = mod x 10
+  where applyToTen f x = f x 10
+        a = applyToTen mod 
         b = fst
-        c x = divMod x 10
+        c = applyToTen divMod 
 
 applyTensDigit x = tensDigitPF x
