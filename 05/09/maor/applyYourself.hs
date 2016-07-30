@@ -1,0 +1,3 @@
+module ApplyYourself where
+
+:t (++)
