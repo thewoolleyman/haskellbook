@@ -1,6 +1,12 @@
 module Lists where
 
 myWords li = go li []
-  where go input result
+  where 
+        dropPart f = drop 1 . dropWhile f  
+        takePart f x = [(takeWhile f x)]
+        go input result
           | input == [] = result
-          | otherwise = go (drop 1 (dropWhile (/= ' ') input)) (result ++ [(takeWhile (/= ' ') input)]) 
+          | otherwise = go (dropPart (/= ' ') input) (result ++ (takePart (/= ' ') input))
+
+
+
