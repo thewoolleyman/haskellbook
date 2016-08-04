@@ -53,3 +53,24 @@ multiplyNums x y = go 1
   where go  count 
           | count == y = x
           | otherwise = x + go(count + 1)
+
+data DividedResult = 
+    Result Integer
+  | DividedByZero 
+  deriving (Show)
+
+dividedBy :: Integral a => a -> a-> DividedResult
+dividedBy num denom 
+  | denom == 0 = DividedByZero
+  | otherwise = signCheck (go (abs num) (abs denom) 0)
+                where go n d count
+                        | n < d = count
+                        | otherwise = go (n - d) d (count + 1)
+                      signCheck result
+                        | num > 0 && denom < 0 = Result (negate result)
+                        | num < 0 && denom > 0 = Result (negate result)
+                        | otherwise = Result result
+
+mc91 n
+  | n > 100 = n - 10
+  | otherwise = mc91 . mc91 $ n + 11 
