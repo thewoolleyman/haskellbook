@@ -2,9 +2,12 @@ module Cipher where
 
 import Data.Char
 
-shift num ch
-  | elem ch ['a'..'z'] = chr $ (mod ((ord ch) - 97 + num) 26) + 97
+shift key ch
+  | elem ch ['a'..'z'] = chr $ (mod ((ord ch) - base + key) modBase) + base
   | otherwise = ch
+  where
+    base = ord 'a'
+    modBase = 26
 
 caesar = map . shift
 
