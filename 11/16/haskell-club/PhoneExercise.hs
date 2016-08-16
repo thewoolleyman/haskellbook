@@ -1,41 +1,60 @@
 module PhoneExercise where
 
+import Data.List
+import Data.Maybe
+
 type Symbol = Char
 type Letters = [Char]
 
 data Button
-  = Button Symbol Letters
+  = Button { symbol :: Symbol, letters :: Letters }
 
 data Input
-  = Input Button Int
+  = Input Char Int
 
 data DaPhone = DaPhone [Button]
 
 defaultPhone :: DaPhone
 defaultPhone =
-  DaPhone [ Button '1' []
-          , Button '2' ['a', 'b', 'c']
-          , Button '3' ['d', 'e', 'f']
+  DaPhone [ Button '1' ['1']
+          , Button '2' ['a', 'b', 'c', '2']
+          , Button '3' ['d', 'e', 'f', '3']
+          , Button '4' ['g', 'h', 'i', '4']
+          , Button '5' ['j', 'k', 'l', '5']
+          , Button '6' ['m', 'n', 'o', '6']
+          , Button '7' ['p', 'q', 'r', 's', '7']
+          , Button '8' ['t', 'u', 'v', '8']
+          , Button '9' ['w', 'x', 'y', 'z', '9']
+          , Button '*' ['^', '*']
+          , Button '0' ['+', '_', '0']
+          , Button '#' ['.', ',', '#']
           ]
 
 
-charToNum :: DaPhone -> Char -> [Int]
-charToNum phone char = undefined
-  --foldr (doesMatch char) 
+charToButton :: DaPhone -> Char -> Maybe Button
+charToButton (DaPhone buttons) keypress =
+  find (\button -> symbol button == keypress) buttons
 
---data Button
---  = Button Symbol [A, B, C]
+forwardEncode :: DaPhone -> String -> String
+forwardEncode phone keypresses =
+  let validKeypresses =
+        map (\elem ->
+              case elem of
+                Just x -> x
+                Nothing -> undefined
+            ) $
+        filter isJust $
+          map (\keypress -> charToButton phone keypress) keypresses
 
--- type alphabet = A | B | C ...
+      validKeypressToInput :: [Button] -> [Input]
+      validKeypressToInput keypresses | [] = []
+                                      | x : [] = buttonToInput x : []
+                                      | x : y : xs if x == y = buttonToInputs x 2 : []
+  in
+    foldr () [] validKeypresses
 
+backwardEncode :: DaPhone -> String -> [Input]
+backwardEncode phone = undefined
 
--- one =
---   Button '2' [('A', 'a'), ('B', 'b'), ('C', 'c')]
-
--- pressesToLetter input =
---  case input of
---    ('2', 1) -> 'a'
---    ('2', 2) -> 'b' 
---    ...
-
+buttonToInput = undefined
 
