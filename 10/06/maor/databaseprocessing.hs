@@ -41,7 +41,6 @@ sumDb = sum . filterDbNumber
 
 avgDb :: [DatabaseItem] -> Double
 avgDb = nom / denom
-  where nom = fromIntegral $ sumDb 
-        denom = fromIntegral $ length filterDbNumber
-        dbNumbers = filterDbNumber
+  where nom = fromIntegral $ sumDb theDatabase
+        denom = fromIntegral $ length $ filterDbNumber theDatabase
   
