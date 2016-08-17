@@ -1,3 +1,5 @@
+module Cardinality where
+
 -- Cardinality = 1
 data PugType = PugData
 
