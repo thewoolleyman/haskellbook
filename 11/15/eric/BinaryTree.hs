@@ -16,7 +16,7 @@ insert' b (Node left a right)
 mapTree :: (a -> b) -> BinaryTree a -> BinaryTree b
 mapTree _ Leaf = Leaf
 mapTree f (Node left a right) =
-  Node undefined undefined undefined
+  Node (mapTree f left) (f a) (mapTree f right)
 
 testTree' :: BinaryTree Integer
 testTree' =
