@@ -1,4 +1,4 @@
-module Ch11Exercises where
+module Ch16Exercises where
 
 -- 1. a
 -- 2. c
@@ -24,4 +24,12 @@ unCaesar = caesar . negate
 -- zip phrase a where a is the above
 -- map caesar with the ord of the letter
 
-
+buildKeyValuePairs [] _ = []
+buildKeyValuePairs phrase key = reverse $ go phrase keys []
+  where
+    go [] k ret = ret
+    go (x:xs) (x':xs') ret = 
+      case x of 
+        ' ' -> go xs (x':xs') ((x, ' ') : ret)
+        _ -> go xs xs' ((x, x') : ret)
+    keys = foldr (++) "" $ take (length phrase) $ repeat key
