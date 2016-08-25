@@ -25,7 +25,7 @@ unCaesar = caesar . negate
 -- map caesar with the ord of the letter
 
 buildKeyValuePairs [] _ = []
-buildKeyValuePairs phrase key = reverse $ go phrase keys []
+buildKeyValuePairs phrase key = reverse $ buildShifters $ (go phrase keys [])
   where
     go [] k ret = ret
     go (x:xs) (x':xs') ret = 
@@ -33,3 +33,10 @@ buildKeyValuePairs phrase key = reverse $ go phrase keys []
         ' ' -> go xs (x':xs') ((x, ' ') : ret)
         _ -> go xs xs' ((x, x') : ret)
     keys = foldr (++) "" $ take (length phrase) $ repeat key
+    buildShifters = map (\(x, y) -> case x of
+                                    ' ' -> (x, 0)
+                                    _ -> (x, (flip (-) 97 . ord . toLower $ y))
+                       )
+
+vigenere phrase key = map (\(x, y) -> flip shift x y) shiftPairs
+  where shiftPairs = buildKeyValuePairs phrase key
