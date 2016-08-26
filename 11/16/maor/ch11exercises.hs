@@ -6,6 +6,7 @@ module Ch16Exercises where
 -- 4. c
 
 import Data.Char
+import Data.List.Split
 
 shift :: Int -> Char -> Char
 shift key ch
@@ -43,4 +44,13 @@ buildKeyValuePairs phrase key = reverse $ buildShifters $ (go phrase keys [])
 vigenere :: [Char] -> [Char] -> [Char]
 vigenere phrase key  = map (\(x, y) -> flip shift x y) $ buildKeyValuePairs phrase key
 
+isSubsequenceOf :: (Eq a) => [a] -> [a] -> Bool
+isSubsequenceOf [] _ = True
+isSubsequenceOf _ [] = False
+isSubsequenceOf a@(x:xs) (x':xs') 
+  | x == x' = isSubsequenceOf xs xs'
+  | otherwise = isSubsequenceOf a xs'
 
+capitalizeWords :: String -> [(String, String)]
+capitalizeWords words = map go $ splitOn " " words
+  where go a@(x:xs) = (a, ((toUpper x) : xs ))
