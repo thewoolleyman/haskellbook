@@ -41,7 +41,9 @@ randomWord' = gameWords >>= randomWord
 
 ---------------------------------------------------------------
 -- Puzzle Stuff
-data Puzzle = Puzzle String [Maybe Char] String
+type PuzzleWord = String
+type GuessedCharacters = String
+data Puzzle = Puzzle PuzzleWord [Maybe Char] GuessedCharacters
 
 instance Show Puzzle where
   show (Puzzle _ discovered guessed) =
@@ -87,10 +89,16 @@ handleGuess puzzle guess = do
 
 gameOver :: Puzzle -> IO ()
 gameOver (Puzzle wordToGuess _ guessed) =
-  when (length guessed > 7) $
-    do putStrLn "You lose!"
-       putStrLn $ "The word was: " ++ wordToGuess
-       exitSuccess
+  let
+    -- "Point Free: It should read like English"
+    misses = filter (not . flip elem wordToGuess) guessed
+    -- "Jeff Free"
+    -- misses = filter (\c -> not (elem c wordToGuess)) guessed
+  in
+    when (length misses > 7) $
+      do putStrLn "You lose!"
+         putStrLn $ "The word was: " ++ wordToGuess
+         exitSuccess
 
 gameWin :: Puzzle -> IO ()
 gameWin (Puzzle _ filledInSoFar _) =
