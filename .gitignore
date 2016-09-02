@@ -22,3 +22,6 @@ cabal.sandbox.config
 
 .idea
 .vscode
+
+# ignore .iml files
+*.iml
