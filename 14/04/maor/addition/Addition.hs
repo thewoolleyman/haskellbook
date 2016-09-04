@@ -15,6 +15,42 @@ multiplyBy num multi = go num multi 0
           | m == 0 = count
           | otherwise = go n (m -1) (count + n)
 
+trivialInt :: Gen Int
+trivialInt = return 1
+
+genBool :: Gen Bool
+genBool = choose (False, True)
+
+genBool' :: Gen Bool
+genBool' = elements [False, True]
+
+genOrdering :: Gen Ordering
+genOrdering = elements [LT, EQ, GT]
+
+genChar :: Gen Char
+genChar = elements ['a'..'z']
+
+-- usage requires specifying types: sample ( genTuple :: Gen (Int, Float))
+genTuple :: (Arbitrary a, Arbitrary b) => Gen (a, b)
+genTuple = do
+  a <- arbitrary
+  b <- arbitrary
+  return (a, b)
+
+-- usage reuires specifying types: sample ( genThreeple :: Gen (Int, Float, Char))
+genThreeple :: (Arbitrary a, Arbitrary b, Arbitrary c) => Gen (a, b, c)
+genThreeple = do
+  a <- arbitrary
+  b <- arbitrary
+  c <- arbitrary
+  return (a, b, c)
+
+prop_additionGreater :: Int -> Bool
+prop_additionGreater x = x + 1 > x
+
+runQc :: IO ()
+runQc = quickCheck prop_additionGreater
+
 main :: IO ()
 main = hspec $ do
   describe "Addition" $ do
@@ -34,3 +70,4 @@ main = hspec $ do
       multiplyBy 5 1 `shouldBe` 5
     it "x + 1 is always greater than x" $ do
       property $ \x-> x + 1> (x :: Int)
+
