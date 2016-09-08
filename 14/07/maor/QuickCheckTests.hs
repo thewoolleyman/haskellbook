@@ -89,6 +89,21 @@ prop_sort =
   forAll (gen :: Gen[Int])
   (\x -> (sort x == twice sort x) && (sort x == fourTimes sort x))
 
+data Fool = 
+    Fulse
+  | Frue
+  deriving (Eq, Show)
+
+genFool :: Gen Fool
+genFool = do
+  oneof [return $ Fulse,
+         return $ Frue]
+
+genFool' :: Gen Fool
+genFool' = do
+  frequency [(3, return $ Fulse),
+             (1, return $ Frue)]
+
 main :: IO ()
 main = do
   quickCheck prop_half
