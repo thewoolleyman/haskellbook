@@ -2,6 +2,12 @@ module QuickCheckTests where
 
 import Test.QuickCheck
 import Data.List (sort)
+import Data.Char (toUpper)
+
+gen :: (Arbitrary a) => Gen a
+gen = do
+  a <- arbitrary
+  return a
 
 divisor :: Gen Float
 divisor = arbitrary `suchThat` (/= 0)
@@ -10,7 +16,7 @@ half x = x / 2
 halfIdentity = ((*2) . half)
 
 prop_half :: Property
-prop_half = 
+prop_half =
   forAll divisor
   (\x  -> (half x) * 2 == x)
 
@@ -34,6 +40,7 @@ genList = do
 
 plusAssociative :: Int -> Int -> Int -> Bool
 plusAssociative x y z = x + (y + z) == (x + y) + z
+
 
 plusCommutative :: Double -> Double -> Bool
 plusCommutative x y = x + y == y + x
@@ -67,6 +74,21 @@ prop_reverseListTwice =
   forAll (genList :: Gen [Int] )
   (\x -> (reverse . reverse) x  == id x)
 
+capitalizeWord [] = []
+capitalizeWord (x:xs) = toUpper x : xs
+
+
+twice f = f . f
+fourTimes = twice . twice
+
+prop_capitalizeWord = 
+  forAll (gen :: Gen [Char])
+  (\x -> (capitalizeWord x == twice capitalizeWord x) && (capitalizeWord x  == fourTimes capitalizeWord x))
+
+prop_sort = 
+  forAll (gen :: Gen[Int])
+  (\x -> (sort x == twice sort x) && (sort x == fourTimes sort x))
+
 main :: IO ()
 main = do
   quickCheck prop_half
@@ -80,3 +102,5 @@ main = do
   quickCheck (expoAssociative :: Int -> Int -> Int -> Bool)
   quickCheck (expoCommutative :: Int -> Int -> Bool)
   quickCheck (prop_reverseListTwice)
+  quickCheck (prop_capitalizeWord)
+  quickCheck (prop_sort)
