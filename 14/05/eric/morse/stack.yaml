@@ -1,0 +1,13 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+extra-deps:
+- container-1.0.2
+- convert-1.0.2
+- data-construction-1.1
+- data-layer-1.0.4
+- functor-utils-1.1
+- lens-utils-1.2
+- typelevel-1.0.4
+resolver: lts-6.16
