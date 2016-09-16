@@ -6,7 +6,11 @@ module Lib
       Three,
       Four,
       BoolConj,
-      BoolDisj
+      BoolDisj,
+      Or,
+      Combine,
+      Comp,
+      Validation
     ) where
 
 import Data.Semigroup
@@ -116,4 +120,51 @@ instance Arbitrary BoolDisj where
   arbitrary = do
     a <- elements [False, True]
     return (BoolDisj a)
+
+-- Or a b
+data Or a b = Fst a | Snd b deriving (Eq, Show)
+
+instance Semigroup (Or a b) where
+  (Fst a) <> _ = Fst a
+  (Snd a) <> (Fst b) = Fst b
+  (Snd a) <> (Snd _) = Snd a
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Or a b) where
+  arbitrary = do
+    a <- arbitrary
+    b <- arbitrary
+    oneof [return $ Fst a,
+           return $ Snd b]
+
+newtype Combine a b = Combine { unCombine :: (a -> b) }
+
+-- HOW DOES THIS WORK????
+instance Semigroup b => Semigroup (Combine a b) where
+  Combine {unCombine=f} <> Combine {unCombine=g} = Combine (f <> g)
+
+newtype Comp a = Comp { unComp :: (a -> a) }
+
+instance Semigroup a => Semigroup (Comp a) where
+  Comp {unComp=f} <> Comp {unComp=g} = Comp (f . g)
+
+-- VALIDATION
+
+data Validation a b = Failure' a | Success' b deriving (Eq, Show)
+
+instance Semigroup a => Semigroup (Validation a b) where 
+    Failure' a <> Failure' a' = Failure' (a <> a')
+    Failure' a <> Success' b = Failure' a
+    Success' b <> Failure' a = Failure' a
+    Success' b <> Success' _ = Success' b
+        
+
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Validation a b) where
+  arbitrary = do
+    a <- arbitrary
+    b <- arbitrary
+    oneof [return $ Failure' a,
+           return $ Success' b]
+
+newtype AccumulateRight a b = AccumulateRight (Validation a b) deriving (Eq, Show)
+
 

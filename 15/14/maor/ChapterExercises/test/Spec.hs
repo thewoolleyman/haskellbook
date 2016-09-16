@@ -4,6 +4,7 @@ import Lib
 import Test.QuickCheck
 import Data.Semigroup
 
+
 semigroupAssoc :: (Eq m, Semigroup m) => m -> m -> m -> Bool 
 semigroupAssoc a b c = (a <> (b <> c)) == ((a <> b) <> c)
 
@@ -19,3 +20,5 @@ main = do
   quickCheck (semigroupAssoc :: (Four Trivial MyInt MyInt Trivial) -> (Four Trivial MyInt MyInt Trivial) -> (Four Trivial MyInt MyInt Trivial) -> Bool)
   quickCheck (semigroupAssoc :: BoolConj -> BoolConj -> BoolConj -> Bool)
   quickCheck (semigroupAssoc :: BoolDisj -> BoolDisj -> BoolDisj -> Bool)
+  quickCheck (semigroupAssoc :: (Or Int Bool) -> (Or Int Bool) -> (Or Int Bool) -> Bool)
+  quickCheck (semigroupAssoc :: (Validation MyInt Bool) -> (Validation MyInt Bool) -> (Validation MyInt Bool) -> Bool)
