@@ -1,4 +1,4 @@
-module Lib
+module Semigroup'
     ( Trivial,
       Identity,
       MyInt,
@@ -165,6 +165,5 @@ instance (Arbitrary a, Arbitrary b) => Arbitrary (Validation a b) where
     oneof [return $ Failure' a,
            return $ Success' b]
 
-newtype AccumulateRight a b = AccumulateRight (Validation a b) deriving (Eq, Show)
 
 

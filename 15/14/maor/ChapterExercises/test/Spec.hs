@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Semigroup'
 import Test.QuickCheck
 import Data.Semigroup
 
