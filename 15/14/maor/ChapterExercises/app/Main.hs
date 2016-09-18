@@ -1,6 +1,6 @@
 module Main where
 
-import Semigroup'
+import Lib
 
 main :: IO ()
 main = putStrLn "main"

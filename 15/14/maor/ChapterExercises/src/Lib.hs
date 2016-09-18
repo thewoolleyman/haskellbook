@@ -1,5 +1,5 @@
-module Semigroup'
-    ( Trivial,
+module Lib
+    ( Trivial (..),
       Identity,
       MyInt,
       Two,
@@ -10,11 +10,13 @@ module Semigroup'
       Or,
       Combine,
       Comp,
-      Validation
+      Validation,
+      Mem
     ) where
 
-import Data.Semigroup
-import Test.QuickCheck
+import Data.Semigroup (Semigroup, (<>))
+import Data.Monoid (Monoid, mempty, mappend)
+import Test.QuickCheck (arbitrary, Arbitrary, oneof, elements)
 
 -- Trivial
 
@@ -22,6 +24,10 @@ data Trivial = Trivial deriving (Eq, Show)
 
 instance Semigroup Trivial where
   _ <> _ = Trivial
+
+instance Monoid Trivial where
+  mempty = Trivial
+  mappend = (<>)
 
 instance Arbitrary Trivial where arbitrary = return Trivial
 
@@ -36,6 +42,10 @@ instance Eq a => Eq (Identity a) where
 instance Semigroup a => Semigroup (Identity a) where
   (Identity a) <> (Identity a') = Identity (a <> a')
 
+instance (Semigroup a, Monoid a) => Monoid (Identity a) where
+  mempty = Identity mempty
+  mappend = (<>)
+
 instance Arbitrary a => Arbitrary (Identity a) where
   arbitrary = do
     a <- arbitrary
@@ -46,6 +56,10 @@ instance Arbitrary a => Arbitrary (Identity a) where
 newtype MyInt = MyInt Int deriving (Show)
 instance Semigroup MyInt where
   (MyInt a) <> (MyInt b) = MyInt (a + b)
+
+instance Monoid MyInt where
+  mappend = (<>)
+  mempty = MyInt (0)
 
 instance Eq MyInt where
   (MyInt a) == (MyInt b) = a == b
@@ -60,6 +74,10 @@ data Two a b = Two a b deriving (Eq, Show)
 
 instance (Semigroup a, Semigroup b) => Semigroup (Two a b) where
   (Two a b) <> (Two a' b') = Two (a <> a') (b <> b')
+
+instance (Monoid a, Semigroup a, Monoid b, Semigroup b) => Monoid (Two a b) where
+  mempty = Two mempty mempty
+  mappend = (<>)
 
 instance (Arbitrary a, Arbitrary b) => Arbitrary (Two a b) where
   arbitrary = do
@@ -104,6 +122,10 @@ instance Semigroup BoolConj where
   (BoolConj True) <> (BoolConj True) = BoolConj True
   _ <> _ = BoolConj False
 
+instance Monoid BoolConj where
+  mappend = (<>)
+  mempty = BoolConj True
+
 instance Arbitrary BoolConj where 
   arbitrary = do
     a <- elements [False, True]
@@ -115,6 +137,10 @@ newtype BoolDisj = BoolDisj Bool deriving (Eq, Show)
 instance Semigroup BoolDisj where
   (BoolDisj False) <> (BoolDisj False) = BoolDisj False
   _ <> _ = BoolDisj True
+
+instance Monoid BoolDisj where
+  mappend = (<>)
+  mempty = BoolDisj False
 
 instance Arbitrary BoolDisj where 
   arbitrary = do
@@ -147,6 +173,10 @@ newtype Comp a = Comp { unComp :: (a -> a) }
 instance Semigroup a => Semigroup (Comp a) where
   Comp {unComp=f} <> Comp {unComp=g} = Comp (f . g)
 
+instance (Semigroup a, Monoid a) => Monoid (Comp a) where
+  mappend = (<>)
+  mempty = Comp id
+
 -- VALIDATION
 
 data Validation a b = Failure' a | Success' b deriving (Eq, Show)
@@ -164,6 +194,4 @@ instance (Arbitrary a, Arbitrary b) => Arbitrary (Validation a b) where
     b <- arbitrary
     oneof [return $ Failure' a,
            return $ Success' b]
-
-
 
