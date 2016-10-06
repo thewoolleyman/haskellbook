@@ -8,4 +8,4 @@ instance Functor Identity where
 
 instance Applicative Identity where
   pure = Identity
-  (Identity fab) <*> (Identity a) = Identity (fab a)
+  (Identity fab) <*> a = fmap fab a
