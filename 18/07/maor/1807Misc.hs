@@ -9,7 +9,7 @@ j :: Monad m => m (m a) -> m a
 j m = m >>= id
 
 l1 :: Monad m => (a -> b) -> m a -> m b
-l1 = liftM
+l1 = fmap
 
 l2 :: Monad m => (a -> b -> c) -> m a -> m b -> m c
 l2 = liftM2
@@ -17,6 +17,14 @@ l2 = liftM2
 a :: Monad m => m a -> m (a -> b) -> m b
 a = flip (<*>)
 
+a' :: Monad m => m a -> m (a -> b) -> m b
+a' = (=<<) . flip fmap
+
+meh :: Monad m => [a] -> (a -> m b) -> m [b]
+meh xs f = foldr (l2 (:)) (return []) (fmap f xs)
+
+flipType :: (Monad m) => [m a] -> m [a]
+flipType = flip meh id
 
 main :: IO ()
 main = hspec $ do
@@ -39,3 +47,5 @@ main = hspec $ do
   describe "a" $ do
     it "passes some basic tests" $ do
       a [1,2,3] [(+ 1),(+ 5)] `shouldBe` [2, 3, 4, 6, 7, 8]
+    it "a' passes some basic tests" $ do
+      a' [1,2,3] [(+ 1),(+ 5)] `shouldBe` [2, 3, 4, 6, 7, 8]
