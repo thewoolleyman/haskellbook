@@ -18,14 +18,12 @@ elem :: (Foldable t, Eq a) => a -> t a -> Bool
 elem a = foldr (\x acc -> x == a || acc) False
 
 minimum :: (Foldable t, Ord a) => t a -> Maybe a
-minimum = undefined
+minimum ta | null ta = Nothing
+           | otherwise = Just $ foldr1 min ta
 
 maximum :: (Foldable t, Ord a) => t a -> Maybe a
-maximum = undefined
-
--- how would I do this using foldr or foldMap?
-null :: (Foldable t) => t a -> Bool
-null = (0 ==) . length
+maximum ta | null ta = Nothing
+           | otherwise = Just $ foldr1 max ta
 
 null' :: (Foldable t) => t a -> Bool
 null' = foldr (\_ _ -> True) False
